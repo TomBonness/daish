@@ -1,0 +1,51 @@
+/* Daish — retro command-center theme.
+ * Aetheria palette: deep-purple "celestial" base16, teal/raspberry accents.
+ * Thin borders, aligned units, tabular numbers, generous separation.
+ */
+
+Screen {
+    background: #0e091d;
+    color: #e7e1f2;
+}
+
+.daish-panel {
+    background: #16102a;
+    border: round #2c1e47;
+    padding: 0 1;
+    margin: 0 0 1 0;
+    color: #e7e1f2;
+    width: 100%;
+    height: 1fr;
+}
+
+.header {
+    background: #0e091d;
+    border: none;
+    margin: 0;
+    padding: 0 1;
+    height: auto;
+}
+
+.alerts {
+    border: round #4a2b52;
+    height: 1;
+    margin: 0;
+    padding: 0 1;
+}
+
+#tabs {
+    height: 1fr;
+}
+
+TabbedContent {
+    border: none;
+}
+
+Tab {
+    padding: 0 2;
+}
+
+Footer {
+    background: #0e091d;
+    color: #8b7fa8;
+}

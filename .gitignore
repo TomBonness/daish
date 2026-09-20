@@ -1,0 +1,18 @@
+# virtual envs
+.venv/
+venv/
+
+# python
+__pycache__/
+*.py[cod]
+*.egg-info/
+build/
+dist/
+
+# tooling caches
+.pytest_cache/
+.ruff_cache/
+.mypy_cache/
+
+# local state / secrets (never commit real daish config/history)
+.env

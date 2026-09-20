@@ -1,0 +1,216 @@
+{
+  "version": 1,
+  "model_roots": ["{root}/models"],
+  "profiles": [
+    {
+      "id": "qwen-ninfer",
+      "label": "Swift Qwen · NInfer",
+      "backend": "ninfer",
+      "control": "transient",
+      "unit": "qwen38-ninfer-swift.service",
+      "memory_max": "40G",
+      "memory_swap_max": "2G",
+      "cwd": "{root}",
+      "env": {},
+      "argv": [
+        "{root}/ninfer/build/apps/ninfer-serve",
+        "{root}/models/Swift-Qwen3.8-27B-abliterated-NVFP4-NInfer/qwen3_8_27b_swift_abliterated_nvfp4.ninfer",
+        "--host", "127.0.0.1", "--port", "8000",
+        "--model-id", "qwen3.8-27b-abliterated-ninfer-swift",
+        "--max-context", "262144",
+        "--kv-dtype", "k8v4", "--max-concurrency", "1",
+        "--prefill-chunk", "1024",
+        "--spec", "dflash2", "--draft-tokens", "15", "--lm-head-draft",
+        "--default-max-tokens", "8192", "--preserve-thinking"
+      ],
+      "base_url": "http://127.0.0.1:8000",
+      "model_id": "qwen3.8-27b-abliterated-ninfer-swift",
+      "model_paths": [
+        "{root}/models/Swift-Qwen3.8-27B-abliterated-NVFP4-NInfer/qwen3_8_27b_swift_abliterated_nvfp4.ninfer"
+      ],
+      "draft_paths": [],
+      "startup_timeout_seconds": 900,
+      "ninfer_jsonl": null
+    },
+    {
+      "id": "qwen-sglang-fp8",
+      "label": "Qwen · SGLang FP8",
+      "backend": "sglang",
+      "control": "transient",
+      "unit": "qwen38-sglang.service",
+      "memory_max": "40G",
+      "memory_swap_max": "2G",
+      "cwd": "{root}",
+      "env": {
+        "CUDA_HOME": "{root}/vllm-env/lib/python3.12/site-packages/nvidia/cu13",
+        "PATH": "{root}/sglang-env/bin:{root}/vllm-env/lib/python3.12/site-packages/nvidia/cu13/bin:/usr/local/sbin:/usr/local/bin:/usr/bin:/bin",
+        "PYTORCH_CUDA_ALLOC_CONF": "expandable_segments:True",
+        "MAX_JOBS": "2",
+        "FLASHINFER_NVCC_THREADS": "1"
+      },
+      "argv": [
+        "{root}/sglang-env/bin/sglang", "serve",
+        "--model-path", "{root}/models/Huihui-Qwen3.8-27B-Abliterated-Gittensor-NVFP4",
+        "--served-model-name", "qwen3.8-27b-abliterated",
+        "--host", "127.0.0.1", "--port", "8000",
+        "--context-length", "131072",
+        "--kv-cache-dtype", "fp8_e4m3",
+        "--attention-backend", "flashinfer",
+        "--chunked-prefill-size", "1024",
+        "--disable-prefill-cuda-graph",
+        "--cuda-graph-max-bs-decode", "1",
+        "--mamba-radix-cache-strategy", "extra_buffer_lazy",
+        "--mamba-ssm-dtype", "bfloat16",
+        "--max-mamba-cache-size", "8",
+        "--mem-fraction-static", "0.90",
+        "--max-running-requests", "1",
+        "--language-only",
+        "--mm-feature-transport", "cpu",
+        "--speculative-algorithm", "DFLASH",
+        "--speculative-draft-model-path", "{root}/models/Qwen3.8-27B-DFlash2",
+        "--speculative-dflash-block-size", "8",
+        "--speculative-draft-window-size", "8192",
+        "--speculative-draft-model-quantization", "fp8",
+        "--speculative-draft-attention-backend", "flashinfer",
+        "--reasoning-parser", "qwen3",
+        "--tool-call-parser", "qwen3_coder",
+        "--default-chat-template-kwargs", "{\"reasoning_effort\":\"medium\",\"preserve_thinking\":true}",
+        "--enable-metrics"
+      ],
+      "base_url": "http://127.0.0.1:8000",
+      "model_id": "qwen3.8-27b-abliterated",
+      "model_paths": [
+        "{root}/models/Huihui-Qwen3.8-27B-Abliterated-Gittensor-NVFP4"
+      ],
+      "draft_paths": [
+        "{root}/models/Qwen3.8-27B-DFlash2"
+      ],
+      "startup_timeout_seconds": 900,
+      "ninfer_jsonl": null
+    },
+    {
+      "id": "qwen-sglang-kv4",
+      "label": "Qwen · SGLang KV4 [experimental]",
+      "backend": "sglang",
+      "control": "transient",
+      "unit": "qwen38-sglang-kv4.service",
+      "memory_max": "40G",
+      "memory_swap_max": "2G",
+      "cwd": "{root}",
+      "env": {
+        "CUDA_HOME": "{root}/vllm-env/lib/python3.12/site-packages/nvidia/cu13",
+        "PATH": "{root}/sglang-env/bin:{root}/vllm-env/lib/python3.12/site-packages/nvidia/cu13/bin:/usr/local/sbin:/usr/local/bin:/usr/bin:/bin",
+        "PYTHONPATH": "{root}/qwen-kv-runtime",
+        "PYTORCH_CUDA_ALLOC_CONF": "expandable_segments:True",
+        "MAX_JOBS": "2",
+        "FLASHINFER_NVCC_THREADS": "1",
+        "SGLANG_FLASHINFER_WORKSPACE_SIZE": "134217728"
+      },
+      "argv": [
+        "{root}/sglang-env/bin/sglang", "serve",
+        "--model-path", "{root}/models/Huihui-Qwen3.8-27B-Abliterated-Gittensor-NVFP4",
+        "--served-model-name", "qwen3.8-27b-abliterated-256k",
+        "--host", "127.0.0.1", "--port", "8000",
+        "--context-length", "262144",
+        "--kv-cache-dtype", "nvfp4",
+        "--attention-backend", "flashinfer",
+        "--prefill-attention-backend", "flashinfer",
+        "--decode-attention-backend", "trtllm_mha",
+        "--speculative-attention-mode", "decode",
+        "--page-size", "64",
+        "--chunked-prefill-size", "1024",
+        "--disable-prefill-cuda-graph",
+        "--cuda-graph-max-bs-decode", "1",
+        "--mamba-radix-cache-strategy", "extra_buffer_lazy",
+        "--mamba-ssm-dtype", "bfloat16",
+        "--max-mamba-cache-size", "4",
+        "--mem-fraction-static", "0.957",
+        "--max-total-tokens", "263168",
+        "--max-running-requests", "1",
+        "--language-only",
+        "--mm-feature-transport", "cpu",
+        "--speculative-algorithm", "DFLASH",
+        "--speculative-draft-model-path", "{root}/models/Qwen3.8-27B-DFlash2",
+        "--speculative-dflash-block-size", "8",
+        "--speculative-draft-window-size", "8192",
+        "--speculative-draft-model-quantization", "fp8",
+        "--speculative-draft-kv-cache-dtype", "fp8_e4m3",
+        "--speculative-draft-attention-backend", "flashinfer",
+        "--reasoning-parser", "qwen3",
+        "--tool-call-parser", "qwen3_coder",
+        "--default-chat-template-kwargs", "{\"reasoning_effort\":\"medium\",\"preserve_thinking\":true}",
+        "--enable-metrics"
+      ],
+      "base_url": "http://127.0.0.1:8000",
+      "model_id": "qwen3.8-27b-abliterated-256k",
+      "model_paths": [
+        "{root}/models/Huihui-Qwen3.8-27B-Abliterated-Gittensor-NVFP4"
+      ],
+      "draft_paths": [
+        "{root}/models/Qwen3.8-27B-DFlash2"
+      ],
+      "startup_timeout_seconds": 900,
+      "ninfer_jsonl": null
+    },
+    {
+      "id": "qwen-vllm",
+      "label": "Qwen · vLLM",
+      "backend": "vllm",
+      "control": "transient",
+      "unit": "daish-qwen-vllm.service",
+      "memory_max": "40G",
+      "memory_swap_max": "2G",
+      "cwd": "{root}",
+      "env": {
+        "CUDA_HOME": "{root}/vllm-env/lib/python3.12/site-packages/nvidia/cu13",
+        "PATH": "{root}/vllm-env/bin:{root}/vllm-env/lib/python3.12/site-packages/nvidia/cu13/bin:/usr/local/sbin:/usr/local/bin:/usr/bin:/bin",
+        "PYTORCH_CUDA_ALLOC_CONF": "expandable_segments:True"
+      },
+      "argv": [
+        "{root}/vllm-env/bin/vllm", "serve",
+        "{root}/models/Huihui-Qwen3.8-27B-abliterated-NVFP4",
+        "--served-model-name", "qwen3.8-27b-abliterated",
+        "--trust-remote-code",
+        "--max-model-len", "262144",
+        "--max-num-seqs", "1",
+        "--max-num-batched-tokens", "512",
+        "--kv-cache-dtype", "turboquant_4bit_nc",
+        "--kv-cache-memory-bytes", "5905580032",
+        "--attention-config.flash_attn_version=2",
+        "--reasoning-parser", "qwen3",
+        "--tool-call-parser", "qwen3_coder",
+        "--enable-auto-tool-choice",
+        "--mm-processor-kwargs", "{\"max_pixels\": 262144, \"min_pixels\": 4096}",
+        "--host", "127.0.0.1", "--port", "8000"
+      ],
+      "base_url": "http://127.0.0.1:8000",
+      "model_id": "qwen3.8-27b-abliterated",
+      "model_paths": [
+        "{root}/models/Huihui-Qwen3.8-27B-abliterated-NVFP4"
+      ],
+      "draft_paths": [],
+      "startup_timeout_seconds": 900,
+      "ninfer_jsonl": null
+    },
+    {
+      "id": "bonsai",
+      "label": "Bonsai · llama.cpp",
+      "backend": "llamacpp",
+      "control": "user_unit",
+      "unit": "bonsai-server.service",
+      "cwd": "{root}/llama-prism",
+      "env": {},
+      "argv": [
+        "{root}/llama-prism/serve-bonsai.sh"
+      ],
+      "base_url": "http://127.0.0.1:8080",
+      "model_id": "bonsai-2-crack",
+      "model_paths": [
+        "{root}/models/Bonsai-2-27B-Ternary-CRACK-GGUF/Bonsai-2-27B-PQ2_0-CRACK.gguf"
+      ],
+      "draft_paths": [],
+      "startup_timeout_seconds": 300,
+      "ninfer_jsonl": null
+    }
+  ]
+}
